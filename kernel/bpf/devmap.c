@@ -507,7 +507,6 @@ static void *dev_map_lookup_elem(struct bpf_map *map, void *key)
 	return dev ? &dev->ifindex : NULL;
 }
 
-<<<<<<< HEAD
 static void dev_map_flush_old(struct bpf_dtab_netdev *dev)
 {
 	if (dev->dev->netdev_ops->ndo_xdp_xmit) {
@@ -526,14 +525,14 @@ static void dev_map_flush_old(struct bpf_dtab_netdev *dev)
 		}
 		rcu_read_unlock();
 	}
-=======
+}
+
 static void *dev_map_hash_lookup_elem(struct bpf_map *map, void *key)
 {
     struct bpf_dtab_netdev *obj = __dev_map_hash_lookup_elem(map, *(u32 *)key);
     struct net_device *dev = obj ? obj->dev : NULL;
 
     return dev ? &dev->ifindex : NULL;
->>>>>>> c824e5fa3b8f (BACKPORT: xdp: Add devmap_hash map type for looking up devices by hashed index)
 }
 
 static void __dev_map_entry_free(struct rcu_head *rcu)
