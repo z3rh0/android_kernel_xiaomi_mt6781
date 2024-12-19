@@ -87,14 +87,6 @@ config MTK_PBM
 	  When enable this option, pbm will allocate limit power budget to
 	  CPU and GPU when battery voltage is low.
 
-config MTK_QOS_FRAMEWORK
-	bool "MTK QOS FRAMEWORK"
-	help
-	  This kernel config can be used to enable MTK QOS FRAMEWORK.
-	  When enabling this option, BW Limiter and BW Bound Detector
-	  will be enabled and set EMI hardware.
-	  If unsure, say N.
-
 config MTK_QOS_V1
 	bool "MTK QOS Framework Ver 1.0"
 	default y if MACH_MT6768
