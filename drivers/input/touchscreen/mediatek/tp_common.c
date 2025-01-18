@@ -5,7 +5,7 @@ struct kobject *touchpanel_kobj;
 	int tp_common_set_##type##_ops(struct tp_common_ops *ops)              \
 	{                                                                      \
 		static struct kobj_attribute kattr =                           \
-			__ATTR(type, (S_IWUSR | S_IRUGO), NULL, NULL);         \
+			__ATTR(type, (S_IWUSR | S_IWGRP | S_IRUSR | S_IRGRP), NULL, NULL);         \
 		kattr.show = ops->show;                                        \
 		kattr.store = ops->store;                                      \
 		return sysfs_create_file(touchpanel_kobj, &kattr.attr);        \
