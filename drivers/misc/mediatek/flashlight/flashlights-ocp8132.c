@@ -55,10 +55,10 @@ static struct work_struct ocp8132_work;
 #define OCP8132_PINCTRL_PIN_HWEN 0
 #define OCP8132_PINCTRL_PINSTATE_LOW 0
 #define OCP8132_PINCTRL_PINSTATE_HIGH 1
-#define OCP8132_PINCTRL_STATE_HW_CH0_HIGH "torch_en_pin1"
-#define OCP8132_PINCTRL_STATE_HW_CH0_LOW  "torch_en_pin0"
-#define OCP8132_PINCTRL_STATE_HW_CH1_HIGH "flash_en_pin1"
-#define OCP8132_PINCTRL_STATE_HW_CH1_LOW  "flash_en_pin0"
+#define OCP8132_PINCTRL_STATE_HW_CH0_HIGH "hw_ch0_high"
+#define OCP8132_PINCTRL_STATE_HW_CH0_LOW  "hw_ch0_low"
+#define OCP8132_PINCTRL_STATE_HW_CH1_HIGH "hw_ch1_high"
+#define OCP8132_PINCTRL_STATE_HW_CH1_LOW  "hw_ch1_low"
 static struct pinctrl *ocp8132_pinctrl;
 static struct pinctrl_state *ocp8132_hw_ch0_high;
 static struct pinctrl_state *ocp8132_hw_ch0_low;
