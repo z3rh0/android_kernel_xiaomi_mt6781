@@ -343,6 +343,22 @@ config DRM_DSI_PANEL_K7S_38_0C_0B_VIDEO
 	help
 	  Say Y here if you want to enable support for 380C0A.
 
+config DRM_DSI_PANEL_K7SR_38_0C_0A_VIDEO
+	tristate "Samsung 380C0A DSI video mode panel"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+	  Say Y here if you want to enable support for 380C0A.
+
+config DRM_DSI_PANEL_K7SR_38_0C_0B_VIDEO
+	tristate "Samsung 380C0B DSI video mode panel"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+	  Say Y here if you want to enable support for 380C0B.
+
 config DRM_PANEL_TRULY_ILI9881H_VDO
 	tristate "TRULY HD+ vdo mode panel"
 	depends on OF
