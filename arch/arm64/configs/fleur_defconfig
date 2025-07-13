@@ -455,3 +455,6 @@ CONFIG_THINLTO=y
 
 # Enable F2FS Compression
 CONFIG_F2FS_FS_COMPRESSION=y
+
+# Enable memory leak detection if necessary
+# CONFIG_SLABINFO=y
