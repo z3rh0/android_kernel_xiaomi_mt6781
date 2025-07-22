@@ -897,6 +897,8 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
 		if (ctx.optlen != 0) {
 			*optlen = ctx.optlen;
 			*kernel_optval = ctx.optval;
+		} else {
+			sockopt_free_buf(&ctx);
 		}
 	}
 out:
