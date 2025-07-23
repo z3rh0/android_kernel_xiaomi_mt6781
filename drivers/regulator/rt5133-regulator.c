@@ -369,7 +369,7 @@ err_cleanup_rt:
 	return -ENODEV;
 }
 
-#if 0
+
 static void generic_debugfs_exit(struct dbg_info *di)
 {
 	struct dbg_internal *d = &di->internal;
@@ -380,7 +380,7 @@ static void generic_debugfs_exit(struct dbg_info *di)
 		debugfs_remove_recursive(d->rt_root);
 	kfree(d->data_buffer);
 }
-#endif
+
 #else
 static inline int generic_debugfs_init(struct dbg_info *di)
 {
@@ -967,6 +967,13 @@ static int rt5133_probe(struct i2c_client *i2c)
 	return ret;
 }
 
+static void rt5133_remove(struct i2c_client *i2c)
+{
+	struct rt5133_priv *priv = i2c_get_clientdata(i2c);
+
+	generic_debugfs_exit(&priv->dbg_info);
+}
+
 static const struct of_device_id __maybe_unused rt5133_ofid_tbls[] = {
 	{ .compatible = "richtek,rt5133", },
 	{ }
@@ -980,6 +987,7 @@ static struct i2c_driver rt5133_driver = {
 		.of_match_table = of_match_ptr(rt5133_ofid_tbls),
 	},
 	.probe_new = rt5133_probe,
+	.remove = rt5133_remove,
 };
 module_i2c_driver(rt5133_driver);
 
