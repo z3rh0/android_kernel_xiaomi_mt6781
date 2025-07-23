@@ -907,21 +907,27 @@ static int rt5133_probe(struct i2c_client *i2c)
 	priv->dbg_info.io_read = rt5133_dbg_io_read;
 	priv->dbg_info.io_write = rt5133_dbg_io_write;
 
+	// Call generic_debugfs_init
 	ret = generic_debugfs_init(&priv->dbg_info);
-	if (ret < 0)
+	if (ret) {
+		dev_warn(&i2c->dev, "debugfs init failed, ret=%d\n", ret);
+		// If generic_debugfs_init failed, it handles its own cleanup
+		// or kzalloc failed (data_buffer is NULL).
+		// So, no further cleanup for debugfs here; just return the error.
 		return ret;
-#endif /* GENERIC_DEBUGFS*/
+	}
+#endif /* GENERIC_DEBUGFS */
 
 	ret = rt5133_validate_vendor_info(priv);
 	if (ret) {
 		dev_err(&i2c->dev, "Failed to check vendor info [%d]\n", ret);
-		return ret;
+		goto err_debugfs_exit; // Added cleanup
 	}
 
 	ret = rt5133_chip_reset(priv);
 	if (ret) {
 		dev_err(&i2c->dev, "Failed to execute sw reset\n");
-		return ret;
+		goto err_debugfs_exit; // Added cleanup
 	}
 
 	config.dev = &i2c->dev;
@@ -935,7 +941,8 @@ static int rt5133_probe(struct i2c_client *i2c)
 		if (IS_ERR(priv->rdev[i])) {
 			dev_err(&i2c->dev,
 				"Failed to register [%d] regulator\n", i);
-			return PTR_ERR(priv->rdev[i]);
+			ret = PTR_ERR(priv->rdev[i]);
+			goto err_debugfs_exit; // Added cleanup
 		}
 	}
 
@@ -948,22 +955,31 @@ static int rt5133_probe(struct i2c_client *i2c)
 	priv->gc.direction_output = rt5133_gpio_direction_output;
 
 	ret = devm_gpiochip_add_data(&i2c->dev, &priv->gc, priv);
-	if (ret)
-		return ret;
+	if (ret) {
+		goto err_debugfs_exit; // Added cleanup
+	}
 
 	ret = rt5133_enable_interrupts(i2c->irq, priv);
 	if (ret) {
 		dev_err(&i2c->dev, "enable interrupt failed\n");
-		return ret;
+		goto err_debugfs_exit; // Added cleanup
 	}
 
 	ret = rt5133_register_notifier(priv);
 	if (ret) {
 		dev_err(&i2c->dev, "register regulator notifier failed\n");
-		return ret;
+		goto err_debugfs_exit; // Added cleanup
 	}
 
 	dev_info(&i2c->dev, "%s done.\n", __func__);
+	return ret;
+
+err_debugfs_exit:
+	// This label ensures that generic_debugfs_exit is called
+	// if an error occurs *after* generic_debugfs_init succeeded.
+#if GENERIC_DEBUGFS
+	generic_debugfs_exit(&priv->dbg_info);
+#endif
 	return ret;
 }
 
