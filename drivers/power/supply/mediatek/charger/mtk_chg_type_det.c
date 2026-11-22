@@ -656,12 +656,36 @@ static int mt_usb_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_HVDCP3_TYPE:
 		val->intval = HVDCP3_NONE;
 #endif
-	case POWER_SUPPLY_PROP_CURRENT_MAX:
-		val->intval = 500000;
+	case POWER_SUPPLY_PROP_CURRENT_MAX: {
+		int ma = 0;
+
+		charger_manager_get_ibus(&ma);
+		/* When the charge pump carries the load the main charger is idle and
+		 * reports ibus = 0, so fall back to the pump bus current. */
+		if (ma <= 500) {
+			struct power_supply *cp = power_supply_get_by_name("bq2597x-standalone");
+			if (cp) {
+				union power_supply_propval cpval = {0,};
+				if (!power_supply_get_property(cp, POWER_SUPPLY_PROP_TI_BUS_CURRENT, &cpval)
+						&& cpval.intval > ma)
+					ma = cpval.intval;
+				power_supply_put(cp);
+			}
+		}
+		/* Report the negotiated input current instead of the fixed USB default.
+		 * The framework derives its charge-rate estimate (lock-screen
+		 * "charging slowly/rapidly" and time-to-full) from
+		 * VOLTAGE_MAX * CURRENT_MAX, so hardcoding 5 V/500 mA makes a 20 W
+		 * PPS charge report as 2.5 W. Never report below the USB default. */
+		val->intval = (ma > 500) ? ma * 1000 : 500000;
 		break;
-	case POWER_SUPPLY_PROP_VOLTAGE_MAX:
-		val->intval = 5000000;
+	}
+	case POWER_SUPPLY_PROP_VOLTAGE_MAX: {
+		int mv = battery_get_vbus();
+
+		val->intval = (mv > 5000) ? mv * 1000 : 5000000;
 		break;
+	}
 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
 		val->intval = battery_get_vbus();
 		break;
