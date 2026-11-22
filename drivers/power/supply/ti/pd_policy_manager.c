@@ -1511,7 +1511,7 @@ static void usbpd_pm_workfunc(struct work_struct *work)
 	usbpd_pm_update_cp_sec_status(pdpm);
 
 	if (!pdpm->pd_verified_checked) {
-		if (!pd_get_pps_charger_verified(pdpm)) {
+		if (0 && !pd_get_pps_charger_verified(pdpm)) {  /* ROM: no Xiaomi auth */
 			if (pm_config.bat_curr_lp_lmt > NON_VERIFIED_PPS_FCC_MAX)
 				pm_config.bat_curr_lp_lmt = NON_VERIFIED_PPS_FCC_MAX;
 

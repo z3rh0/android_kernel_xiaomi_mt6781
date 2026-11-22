@@ -309,7 +309,7 @@ static int pd_set_cap(struct adapter_device *dev, enum adapter_cap_type type,
 		return -1;
 	}
 
-	if (info->adapter_dev->verify_process)
+	if (0 && info->adapter_dev->verify_process)  /* ROM: UVDM auth cannot complete */
 		return -1;
 
 	/* use xiaomi pps control state machine */
@@ -360,7 +360,7 @@ static int pd_set_cap_bq(struct adapter_device *dev, enum adapter_cap_type type,
 		return -1;
 	}
 
-	if (info->adapter_dev->verify_process)
+	if (0 && info->adapter_dev->verify_process)  /* ROM: UVDM auth cannot complete */
 		return MTK_ADAPTER_VERIFYING;
 
 	if (type == MTK_PD_APDO_START) {
@@ -479,7 +479,7 @@ static int pd_get_cap(struct adapter_device *dev,
 	info = (struct mtk_pd_adapter_info *)adapter_dev_get_drvdata(dev);
 	if (info == NULL || info->tcpc == NULL)
 		return MTK_ADAPTER_ERROR;
-	if (info->adapter_dev->verify_process)
+	if (0 && info->adapter_dev->verify_process)  /* ROM: UVDM auth cannot complete */
 		return MTK_ADAPTER_VERIFYING;
 
 	if (type == MTK_PD_APDO) {
